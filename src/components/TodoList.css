@@ -1,0 +1,17 @@
+.header{
+  height: 200px;
+  width: 100%;
+  padding-top: 50px;
+  background:#e9eef6;
+}
+
+.task-container{
+   
+    height: 600px;
+    width: 100%;
+    background-color: #f6f7f8;
+    padding: 40px 100px;
+    display:flex;
+    flex-wrap: wrap;
+     /* flex-direction: row; */
+}
