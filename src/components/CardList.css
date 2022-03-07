@@ -2,6 +2,11 @@
     box-sizing: border-box;
 }
 
+.card-header {
+    width:50%;
+    text-align: center;
+}
+
 .card-wrapper {
     width: 270px;
     height: 200px;

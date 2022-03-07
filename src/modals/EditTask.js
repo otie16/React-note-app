@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, {useState, useEffect} from "react"
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
 
-function CreateTask({ modal, toggle, save }) {
+function EditTask({ modal, toggle, updateNote, notes}) {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
 
@@ -18,45 +18,51 @@ function CreateTask({ modal, toggle, save }) {
 
     }
 
-    const handleSave = () => {
-        let taskObj = {};
-        taskObj['title'] = title;
-        taskObj['description'] = description;
-        save(taskObj);
-    }
+    useEffect(() => {
+        setTitle(notes.title);
+        setDescription(notes.description);
+    }, [])
 
+    const handleUpdate = (e) => {
+        e.preventDefault();
+        let tempObj = {};
+        tempObj['title'] = title;
+        tempObj['description'] = description;
+        // save(taskObj);
+        updateNote(tempObj);
+    }
     return (
         <Modal isOpen={modal} toggle={toggle}>
-            <ModalHeader toggle={toggle}>Create Task</ModalHeader>
+            <ModalHeader toggle={toggle}>Update Task</ModalHeader>
             <ModalBody>
                 <form>
                     <div className="form-group">
                         <label>Task Name</label>
                         <input
                             type="text"
-                            value={title}
-                            name="title"
-                            onChange={handleChange}
                             className="form-control"
+                            name="title"
+                            value={title}
+                            onChange={handleChange}
                         />
                     </div>
                     <div className="form-group">
                         <label>Description</label>
                         <textarea
                             rows="5"
-                            value={description}
-                            name="description"
-                            onChange={handleChange}
                             className="form-control"
+                            name="description"
+                            value={description}
+                            onChange={handleChange}
                         ></textarea>
                     </div>
                 </form>
             </ModalBody>
             <ModalFooter>
-                <Button color="primary" onClick={handleSave}>
-                    Create
+                <Button color="primary" onClick={handleUpdate}>
+                    Update 
                 </Button>
-                <Button color="danger" onClick={toggle}>
+                <Button color="danger">
                     Cancel
                 </Button>
             </ModalFooter>
@@ -64,4 +70,4 @@ function CreateTask({ modal, toggle, save }) {
     );
 }
 
-export default CreateTask;
+export default EditTask;

@@ -1,61 +1,66 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import CreateTask from '../modals/CreateTask';
+import CardList from './CardList';
 import './TodoList.css';
-import CreateTask from '../modals/createTask'
-import CardList from './CardList'
+
 
 const TodoList = () => {
+    //creating a state to set the modal state to either true or false
     const [modal, setModal] = useState(false);
-    const [taskList, setTaskList] = useState([]);
-    // console.log(taskList);
+    const [noteList, setNoteList] = useState([]);
 
-    //Fetching Items from local storage
+    //Changing modal state when toggle function is called
+    const toggle = () => {
+        setModal(!modal);
+    }
+
+    const saveTask = (taskObj) => {
+        let tempList = noteList;
+        tempList.push(taskObj);
+        localStorage.setItem('noteList', JSON.stringify(tempList));
+        setNoteList(noteList);
+        setModal(false)
+    }
+
     useEffect(() => {
-        let arr = localStorage.getItem("taskList")
+        let arr = localStorage.getItem('noteList')
 
-        //to update the tasklist if an item exist in local storage
         if (arr) {
-            //Coverting the item from json string back to an array object 
-            let obj = JSON.parse(arr);
-            setTaskList(obj);
+            let parsedItem = JSON.parse(arr);
+            setNoteList(parsedItem);
         }
-
     }, []);
 
-    const deleteTask = (index) => {
-        let tempList = taskList;
+    const deleteNote = (index) => {
+        let tempList = noteList;
         tempList.splice(index, 1);
-        localStorage.setItem('taskList', JSON.stringify(tempList));
-        setTaskList(tempList);
+        localStorage.setItem('noteList', JSON.stringify(tempList));
+        setNoteList(tempList);
         window.location.reload();
     }
 
-    const toggle = () => {
-        setModal(!modal)
+    const updateListArray = (notes, index) => {
+        let tempList = noteList;
+        tempList[index] = notes
+        localStorage.setItem('noteList', JSON.stringify(tempList));
+        setNoteList(tempList);
+        window.location.reload();
     }
 
-    //Saving the created task to an array
-    const saveTask = (taskObj) => {
-        let tempList = taskList;
-        tempList.push(taskObj);
-
-        //Storing in local storage and converting array object to string
-        localStorage.setItem('taskList', JSON.stringify(tempList));
-
-        setTaskList(taskList);
-        setModal(false);
-    }
-
-    return <>
-        <div className="header text-center">
-            <h3>Todo List</h3>
-            <button className="btn btn-primary mt-2" onClick={() => setModal(true)}>Create Task</button>
-        </div>
-        <div className='task-container'>
-            {taskList.map((task, index) => <CardList taskObj={task} index={index} deleteTask={deleteTask}/>)}
-        </div>
-        {/* passing props */}
-        <CreateTask toggle={toggle} modal={modal} save={saveTask} />
-    </>
+    return (
+        <>
+            <div className="header text-center">
+                <h3>Note App</h3>
+                <button className="btn btn-primary mt-2" onClick={() => setModal(true)}>Create Note</button>
+            </div>
+            <div className="task-container">
+                {
+                    noteList.map((note, index) => <CardList index={index} notes={note} deleteNote={deleteNote} updateListArray={updateListArray}/>)
+                }
+            </div>
+            <CreateTask modal={modal} toggle={toggle} save={saveTask} />
+        </>
+    )
 };
 
 export default TodoList;
